@@ -25,8 +25,8 @@ import view.DeskView;
 
 public class MyLockService extends Service {
     private View lockView;
-    private DeskView deskView;
     public static boolean hasAddView;
+    private static final String TAG = "MyLockService";
 
     @Nullable
     @Override
@@ -41,29 +41,31 @@ public class MyLockService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        flags = Service.START_FLAG_RETRY;
+
+        Intent service1 = new Intent(this, FuckingService.class);
+        this.startService(service1);
+
         lockView = LayoutInflater.from(MyApplication.getContext()).inflate(R.layout.activity_main,null);
-        deskView = (DeskView) lockView.findViewById(R.id.haha);
         WindowManager mWindowManager = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
         final WindowManager.LayoutParams params = new WindowManager.LayoutParams();
         int flags1 = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
         params.flags = flags1;
         params.format = PixelFormat.TRANSLUCENT;
-        params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE ;
-        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT ;//这里可以改为系统级别的弹窗，哈哈
+        params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+        params.type = WindowManager.LayoutParams.TYPE_TOAST ;//这里可以改为系统级别的弹窗，哈哈
         if(!hasAddView) {
             mWindowManager.addView(lockView,params);
             hasAddView = true;
         }
         MyReceiver myReceiver = new MyReceiver();
-        IntentFilter i = new IntentFilter("wangic");
+        IntentFilter i = new IntentFilter("fuckingServiceKilled");
         this.registerReceiver(myReceiver,i);
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
-        Intent i = new Intent("wangic");
+        Intent i = new Intent("MyLockServiceKilled");
         sendBroadcast(i);
         super.onDestroy();
     }
@@ -72,7 +74,8 @@ public class MyLockService extends Service {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Intent i = new Intent(MyApplication.getContext(),MyLockService.class);
+            Log.e(TAG, "onReceive: "+"MyLockServiceKilled" );
+            Intent i = new Intent(MyApplication.getContext(),FuckingService.class);
             MyApplication.getContext().startService(i);
         }
     }
