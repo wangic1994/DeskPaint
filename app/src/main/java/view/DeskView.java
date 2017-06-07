@@ -61,10 +61,6 @@ public class DeskView extends View {
             speed = 0;
 
         }
-
-
-
-
         invalidate();
 
     }

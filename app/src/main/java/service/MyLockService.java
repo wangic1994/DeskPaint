@@ -28,7 +28,6 @@ public class MyLockService extends Service {
     public static boolean hasAddView;
     private static final String TAG = "MyLockService";
 
-    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
